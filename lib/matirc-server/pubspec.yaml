@@ -1,0 +1,7 @@
+name: matirc_server
+description: A proxy server for the matirc Web IRC client.
+version: 0.0.1
+environment:
+  sdk: '>=1.19.0 <2.0.0'
+dependencies:
+  irc: ^3.0.1

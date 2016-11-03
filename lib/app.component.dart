@@ -4,6 +4,7 @@ import 'services/irc.service.dart';
 
 @Component(
     selector: 'my-app',
+    providers: const [IrcService],
     templateUrl: 'app.component.html'
 )
 class AppComponent {
@@ -16,5 +17,7 @@ class AppComponent {
     ircService.onMessage.listen((MessageEvent message) {
       messages.add(message);
     });
+
+    ircService.connect("testrinu", ["#dev"]);
   }
 }
