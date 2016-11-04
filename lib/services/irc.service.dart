@@ -1,32 +1,32 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' hide Client;
+import 'dart:html';
 import 'package:angular2/core.dart';
-import "package:irc/client.dart" hide MessageEvent;
 
 @Injectable()
 class IrcService {
-  Configuration _config;
-  Client _client;
-
-  StreamController<dynamic> _onMessageController = new StreamController.broadcast();
+  StreamController<dynamic> _onMessageController =
+      new StreamController.broadcast();
   Stream<dynamic> onMessage;
+  WebSocket socket;
 
   IrcService(@Inject("IRC_HOST") String host, @Inject("IRC_PORT") int port) {
-    _config = new Configuration(host: host, port: port);
     onMessage = _onMessageController.stream;
   }
 
-  void connect(String nickname, List<String> channels, [String password = null]) {
-    _config..username = nickname
-           ..nickname = nickname
-           ..password = password; 
+  void connect(String nickname) {
+    socket = new WebSocket("ws://localhost:8080");
 
-    WebSocket socket = new WebSocket("ws://localhost:8080");
-   
+    socket.onError.listen((event) {
+      window.console.log(event);
+    });
+
     socket.onOpen.listen((event) {
       window.console.log(event);
       socket.sendString("rinutest");
+
+      new Timer.periodic(
+          new Duration(seconds: 1), (t) => socket.sendString("rinutest"));
     });
 
     socket.onMessage.listen((MessageEvent event) {
@@ -34,27 +34,12 @@ class IrcService {
       _onMessageController.add(JSON.decode(event.data));
     });
 
-    
-
-    /*_client = new Client(_config);
-
-    _client.onReady.listen((ReadyEvent event) {
-      channels.forEach((channel) {
-        event.join(channel);
-      });
+    socket.onClose.listen((CloseEvent event) {
+      window.console.log(event);
     });
-
-    _client.onMessage.listen((MessageEvent event) {
-      _onMessageController.add(event);
-    });
-
-    _client.connect();*/
-
   }
 
   void sendMessage(String target, String message) {
-    _client.sendMessage(target, message);
+    socket.sendString(message);
   }
-
-
 }

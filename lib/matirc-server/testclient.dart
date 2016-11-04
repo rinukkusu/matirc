@@ -1,22 +1,8 @@
-/*import '../lib/services/irc.service.dart';
-import 'package:angular2/core.dart';
-import 'package:angular2/platform/browser.dart';
-import 'package:matirc/app.component.dart';
-
-void main() {
-  bootstrap(AppComponent, [
-    provide("IRC_HOST", useValue: "irc.sub-r.de"),
-    provide("IRC_PORT", useValue: 6669),
-    
-    IrcService,
-  ]);
-}*/
-
 import 'dart:async';
 import 'dart:html';
 
 main() async {
-  var socket = new WebSocket('ws://localhost:8080');
+  var socket = new WebSocket('ws://127.0.0.1:8081/ws');
 
   socket.onError.listen((event) {
     window.console.log(event);

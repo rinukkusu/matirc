@@ -1,5 +1,4 @@
 import 'package:angular2/core.dart';
-import 'package:irc/client.dart';
 import 'services/irc.service.dart';
 
 @Component(
@@ -9,15 +8,15 @@ import 'services/irc.service.dart';
 )
 class AppComponent {
   IrcService ircService;
-  List<MessageEvent> messages = new List<MessageEvent>();
+  List<dynamic> messages = new List<dynamic>();
 
   AppComponent(IrcService ircService) {
     this.ircService = ircService;
 
-    ircService.onMessage.listen((MessageEvent message) {
+    ircService.onMessage.listen((message) {
       messages.add(message);
     });
 
-    ircService.connect("testrinu", ["#dev"]);
+    ircService.connect("testrinu");
   }
 }

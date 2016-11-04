@@ -5,3 +5,5 @@ environment:
   sdk: '>=1.19.0 <2.0.0'
 dependencies:
   irc: ^3.0.1
+  shelf: any
+  shelf_web_socket: ^0.2.1
