@@ -16,15 +16,16 @@ import 'dart:async';
 import 'dart:html';
 
 main() async {
-  var socket = new WebSocket('ws://localhost:8080');
+  var socket = new WebSocket('ws://localhost:8080/ws');
+
+  window.console.log(socket.protocol);
 
   socket.onError.listen((event) {
     window.console.log(event);
   });
 
   socket.onOpen.listen((event) {
-    window.console.log([1, event]);
-    socket.sendString("test");
+    window.console.log(event);
 
     new Timer.periodic(
         new Duration(seconds: 1), (t) => socket.sendString("test22"));

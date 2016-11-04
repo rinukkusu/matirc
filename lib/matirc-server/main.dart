@@ -2,38 +2,38 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:irc/client.dart';
-import 'package:shelf_web_socket/shelf_web_socket.dart';
-import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main() {
-  /*HttpServer.bind(InternetAddress.ANY_IP_V4, 8080).then((HttpServer server) {
-    print("HttpServer listening...");
-    server.serverHeader = "matirc_server";
-    server.listen((HttpRequest request) {
-      if (WebSocketTransformer.isUpgradeRequest(request)) {
-        WebSocketTransformer.upgrade(request).then(handleWebSocket);
-      } else {
-        print("Regular ${request.method} request for: ${request.uri.path}");
-        serveRequest(request);
+  HttpServer
+    .bind(InternetAddress.ANY_IP_V4, 8080)
+    .then((HttpServer server) {
+      print("HttpServer listening...");
+      server.serverHeader = "matirc_server";
+      server.listen((HttpRequest request) {
+        if (WebSocketTransformer.isUpgradeRequest(request)) {
+          WebSocketTransformer.upgrade(request).then(handleWebSocket);
+        } else {
+          print("Regular ${request.method} request for: ${request.uri.path}");
+          serveRequest(request);
+        }
       }
-    });
-  });*/
-
-  shelf_io.serve(webSocketHandler(handleWebSocket), 'localhost', 8080).then((server) {
-    print('Serving at ws://${server.address.host}:${server.port}');
+    );
   });
 }
 
 List<Client> clients = new List<Client>();
 
-void handleWebSocket(WebSocketChannel channel) {
+void handleWebSocket(WebSocket socket) {
   print('Client connected!');
 
   clients.add(null);
   int idx = clients.length - 1;
 
-  channel.stream.listen((String s) {
+  socket.handleError((err) {
+    print(err);
+  });
+
+  socket.listen((String s) {
     print('Client sent: $s');
 
     if (clients[idx] == null) {
@@ -61,12 +61,12 @@ void handleWebSocket(WebSocketChannel channel) {
 
       clients[idx].connect();*/
 
-      channel.sink.add("test");
+      socket.add("test");
     } else {
       //clients[idx].sendMessage("#dev", s);
     }
   }, onDone: () {
-    print('Client disconnected: ${channel.closeCode}');
+    print('Client disconnected: ${socket.closeCode} - ${socket.closeReason}');
     clients[idx]?.disconnect();
   }, onError: (err) {
     print(err);
